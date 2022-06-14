@@ -24,6 +24,7 @@ public class AttributeController {
     public ResponseEntity<Attribute> editAttribute(@PathVariable Long Id,@RequestBody Attribute attribute){
         return attributeService.editAttribute(Id,attribute);
     }
+
     @DeleteMapping("/delete/{Id}")
     public void deleteAttribute(@PathVariable Long Id)
     {
