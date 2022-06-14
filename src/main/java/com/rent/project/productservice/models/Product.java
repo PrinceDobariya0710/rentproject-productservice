@@ -1,14 +1,19 @@
 package com.rent.project.productservice.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.sql.Date;
+
 
 @Entity
 @Data
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Product {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,6 +44,8 @@ public class Product {
     @Column(name="product_rate")
     private Integer product_rate;
 
+    private String productDetail;
+
     @ManyToOne
     //@JsonManagedReference
     @JoinColumn(name = "subcategory_id", referencedColumnName = "id")
@@ -49,4 +56,25 @@ public class Product {
     @JoinColumn(name = "productDurationRate_id", referencedColumnName = "id")
     private ProductDurationRate productDurationRates;
 
+    @Column(name = "created_at", nullable = true)
+    private Date createdAt;
+
+    @Column(name = "modified_at", nullable = true)
+    private Date modifiedAt;
+
+    public Product(UserDetails userDetailsId, String productName, Integer value_duration, String product_image, String product_description, Integer deposit, Integer available_pieces, Integer product_rate, String productDetail, SubCategory subcategory, ProductDurationRate productDurationRates, Date createdAt, Date modifiedAt) {
+        this.userDetailsId = userDetailsId;
+        this.productName = productName;
+        this.value_duration = value_duration;
+        this.product_image = product_image;
+        this.product_description = product_description;
+        this.deposit = deposit;
+        this.available_pieces = available_pieces;
+        this.product_rate = product_rate;
+        this.productDetail = productDetail;
+        this.subcategory = subcategory;
+        this.productDurationRates = productDurationRates;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
+    }
 }
