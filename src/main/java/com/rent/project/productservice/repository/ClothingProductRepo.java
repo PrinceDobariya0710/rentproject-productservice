@@ -29,4 +29,7 @@ public interface ClothingProductRepo extends JpaRepository<ClothingProducts,Long
     @Override
     Page<ClothingProducts> findAll(Pageable pageable);
 
+    @Query(value = "SELECT * FROM clothing_products cp WHERE cp.product_id =?1",nativeQuery = true)
+    Optional<ClothingProducts> findByProductId(Long product_id);
+
 }

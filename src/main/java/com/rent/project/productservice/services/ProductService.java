@@ -7,6 +7,7 @@ import com.rent.project.productservice.repository.ClothingProductRepo;
 import com.rent.project.productservice.repository.ProductRepo;
 import com.rent.project.productservice.repository.SubCategoryRepo;
 import com.rent.project.productservice.request.format.ClothProduct;
+import com.rent.project.productservice.request.format.UpdateAvailablePieces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,5 +78,26 @@ public class ProductService {
     public void updateImage(Long id, MultipartFile file) throws IOException {
         String filename=fileUploadService.uploadFile(file);
         productrepo.updateProductImage(id,filename);
+    }
+
+    @Transactional
+    public String updateAvailablePiecesNumber(UpdateAvailablePieces updateAvailablePieces){
+        try{
+            System.out.println(updateAvailablePieces);
+            productrepo.updateAvailablePieces(updateAvailablePieces.getProductId(), updateAvailablePieces.getAvailablePieces());
+            return "success";
+        }
+        catch (Exception e){
+            return e.getMessage();
+        }
+
+
+    }
+
+    public Optional<ClothingProducts> getProductByProductId(Long product_id){
+
+        Optional<ClothingProducts> clothingProducts = clothingProductRepo.findByProductId(product_id);
+        return clothingProducts;
+//        Optional<Product> product = productrepo.findById(product_id);
     }
 }
