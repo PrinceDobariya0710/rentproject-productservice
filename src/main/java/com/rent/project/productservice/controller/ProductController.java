@@ -5,6 +5,7 @@ import com.rent.project.productservice.models.Product;
 import com.rent.project.productservice.request.format.RestResponseClothingProduct;
 import com.rent.project.productservice.request.format.UpdateAvailablePieces;
 import com.rent.project.productservice.services.ProductService;
+import com.rent.project.productservice.services.userservice.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,9 @@ public class ProductController {
 
     @Autowired
     ProductService ps;
+
+    @Autowired
+    UserService userService;
 
     @PostMapping(path = "/add",consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Product> addproduct(@RequestPart("product") Product product,@RequestParam("file") MultipartFile file) throws IOException {
@@ -72,14 +76,15 @@ public class ProductController {
     }
 
     @GetMapping("/product_by_product_id/")
-    public RestResponseClothingProduct getProductFromProductId(@RequestParam("product_id") String product_id) {
+    public RestResponseClothingProduct getProductFromProductId(@RequestHeader Map<String,String> header,@RequestParam("product_id") String product_id) {
+        String token = header.get("authorization");
         try {
             Optional<ClothingProducts> clothingProducts = ps.getProductByProductId(Long.parseLong(product_id));
-            RestResponseClothingProduct productResponse = new RestResponseClothingProduct("success", clothingProducts);
-            return productResponse;
+            Long userDetailId = clothingProducts.get().getProduct().getUserDetailsId().getUserDetailsId();
+            Object userDetails = userService.getAddressOfUser(userDetailId,token);
+            return new RestResponseClothingProduct(userDetails, clothingProducts);
         } catch (Exception e) {
-            RestResponseClothingProduct productResponse = new RestResponseClothingProduct(e.toString(), null);
-            return productResponse;
+            return new RestResponseClothingProduct(e.toString(), null);
         }
     }
     @PutMapping("/update_pieces/")
