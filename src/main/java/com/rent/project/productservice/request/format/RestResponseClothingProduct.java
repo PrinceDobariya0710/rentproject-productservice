@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Data
@@ -12,6 +13,6 @@ import java.util.Optional;
 @NoArgsConstructor
 public class RestResponseClothingProduct {
 
-    String response;
+    Object UserDetails;
     Optional<ClothingProducts> clothingProducts;
 }
