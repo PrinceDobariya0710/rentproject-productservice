@@ -1,11 +1,14 @@
 package com.rent.project.productservice.controller;
 
+import com.rent.project.productservice.jwt.JwtUtil;
 import com.rent.project.productservice.models.ClothingProducts;
 import com.rent.project.productservice.models.Product;
 import com.rent.project.productservice.request.format.RestResponseClothingProduct;
 import com.rent.project.productservice.request.format.UpdateAvailablePieces;
+import com.rent.project.productservice.request.format.UserCredObject;
 import com.rent.project.productservice.services.ProductService;
 import com.rent.project.productservice.services.userservice.UserService;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +28,20 @@ public class ProductController {
     ProductService ps;
 
     @Autowired
+    private JwtUtil jwtUtil;
+
+
+    @Autowired
     UserService userService;
 
     @PostMapping(path = "/add",consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Product> addproduct(@RequestHeader Map<String,String> header,@RequestPart("product") Product product,@RequestParam("file") MultipartFile file) throws IOException {
+        String token = header.get("authorization");
+        Claims claims = jwtUtil.extractAllClaims(token.substring(7));
+        long requestedUserId = (long)(claims.get("id",Integer.class));
+        Map<Integer ,String> role_name = claims.get("role",Map.class);
+        UserCredObject userCredObject = new UserCredObject(token,requestedUserId,role_name.get("role_name"));
+
         return ps.addProduct(product,file);
     }
 
@@ -100,6 +113,18 @@ public class ProductController {
             return ResponseEntity.badRequest().body(Map.of(
                     "response", "fail",
                     "reason", response));
+        }
+
+    }
+
+    @GetMapping("/get/product/by/")
+    public ResponseEntity<Object> getProductByProductId(@RequestParam("product_id") String productId){
+        try {
+            Optional<ClothingProducts> clothingProducts = ps.getProductByProductId(Long.parseLong(productId));
+            return ResponseEntity.ok().body(Map.of("message","success","data",clothingProducts));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body(Map.of("message","unable to get product","data",null));
         }
 
     }
