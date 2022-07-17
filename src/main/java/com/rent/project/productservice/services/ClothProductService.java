@@ -59,9 +59,12 @@ public class ClothProductService {
                 "product_info", savedClothingProduct));
     }
 
+    public void uploadImage (Long productId,MultipartFile file){
+
+    }
     //get clothing product
-    public ResponseEntity<Optional<ClothingProducts>> getClothProduct(Long cloth_product_id) {
-        return ResponseEntity.ok().body(clothingProductRepo.findById(cloth_product_id));
+    public Optional<ClothingProducts> getClothProduct(Long cloth_product_id) {
+        return clothingProductRepo.findById(cloth_product_id);
     }
 
 

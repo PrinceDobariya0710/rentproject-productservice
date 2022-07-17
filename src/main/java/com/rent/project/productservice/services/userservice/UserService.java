@@ -1,5 +1,7 @@
 package com.rent.project.productservice.services.userservice;
 
+import com.rent.project.productservice.models.UserDetails;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -41,6 +43,23 @@ public class UserService {
         details.put("contact",contactData);
 
         return details;
+
+    }
+
+    public UserDetails getUserDetailsFromUserId(Long userId,String token){
+
+        String userDetailsURL = "http://localhost:8082/user-profile-service/get/user_details/?user_id="+userId;
+        HttpHeaders userDetailsHeader = new HttpHeaders();
+        userDetailsHeader.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        userDetailsHeader.setBearerAuth(token.substring(7));
+        HttpEntity<String> addressEntity = new HttpEntity<String>(userDetailsHeader);
+        String userData = restTemplate.exchange(userDetailsURL, HttpMethod.GET,addressEntity, String.class).getBody();
+        JSONObject jsonUSer = new JSONObject(userData);
+        UserDetails userDetails = new UserDetails();
+        userDetails.setUserDetailsId(Long.valueOf(Helpers.getKey(new JSONObject(Helpers.getKey(jsonUSer,"userDetailsId")),"userDetailsId")));
+        userDetails.setUserId(userId);
+
+        return userDetails;
 
     }
 }
