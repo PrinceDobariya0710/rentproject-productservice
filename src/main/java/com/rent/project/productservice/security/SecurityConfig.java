@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
-                .antMatchers("http://localhost:8081/swagger-ui.html#/").permitAll()
+                .antMatchers("http://localhost:8081/swagger-ui.html#/","products/cloth-product/user/**").permitAll()
                 .antMatchers("/products/{userName}").hasRole("ADMIN")
                 .antMatchers("/products/product/**").authenticated()
                 .and().exceptionHandling().and().sessionManagement()
