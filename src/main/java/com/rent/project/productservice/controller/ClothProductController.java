@@ -81,7 +81,7 @@ public class ClothProductController {
 
     }
 
-    @GetMapping(path = "/get-categorywise-cproduct/")
+    @GetMapping(path = "user/get-categorywise-cproduct/")
     public ResponseEntity<Object> getSubcategoryProducts(@RequestParam("subcategory-id") Long subCategoryId){
         try{
             return ResponseEntity.ok().body(clothingProductRepo.getClothProductsByCategory(subCategoryId));
@@ -94,7 +94,7 @@ public class ClothProductController {
 
     }
 
-    @GetMapping(path = "get/latest-products/")
+    @GetMapping(path = "user/get/latest-products/")
     public ResponseEntity<Object> getFourWeekProducts(){
         try{
             List<ClothingProducts> clothingProducts = clothingProductRepo.getFourWeekClothProducts();
@@ -108,7 +108,7 @@ public class ClothProductController {
 
     }
 
-    @GetMapping(path = "/get/all-cproducts/")
+    @GetMapping(path = "user/get/all-cproducts/")
     public ResponseEntity<Object> getAllProducts(){
         try {
             return ResponseEntity.ok().body(clothingProductRepo.findAll());
