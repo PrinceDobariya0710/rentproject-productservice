@@ -29,8 +29,7 @@ public class ClothProductService {
     @Autowired
     FileUploadService fileUploadService;
     //add clothing category products
-    public ResponseEntity<Object> addClothProduct(ClothProduct clothProduct, MultipartFile file) throws IOException {
-        String filename=fileUploadService.uploadFile(file);
+    public ClothingProducts addClothProduct(ClothProduct clothProduct) {
         Date createdAt = Date.valueOf(LocalDate.now());
         Date modifiedAt = Date.valueOf(LocalDate.now());
 
@@ -38,7 +37,7 @@ public class ClothProductService {
                 clothProduct.getUserDetailsId(),
                 clothProduct.getProductName(),
                 clothProduct.getValue_duration(),
-                filename,
+                "Not set",
                 clothProduct.getProduct_description(),
                 clothProduct.getDeposit(),
                 clothProduct.getAvailable_pieces(),
@@ -54,14 +53,9 @@ public class ClothProductService {
         ClothingProducts clothingProducts = new ClothingProducts(savedProduct, clothProduct.getSize());
         ClothingProducts savedClothingProduct = clothingProductRepo.save(clothingProducts);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                "response", "created",
-                "product_info", savedClothingProduct));
+        return savedClothingProduct;
     }
 
-    public void uploadImage (Long productId,MultipartFile file){
-
-    }
     //get clothing product
     public Optional<ClothingProducts> getClothProduct(Long cloth_product_id) {
         return clothingProductRepo.findById(cloth_product_id);

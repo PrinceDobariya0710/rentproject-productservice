@@ -56,7 +56,7 @@ public class UserService {
         String userData = restTemplate.exchange(userDetailsURL, HttpMethod.GET,addressEntity, String.class).getBody();
         JSONObject jsonUSer = new JSONObject(userData);
         UserDetails userDetails = new UserDetails();
-        userDetails.setUserDetailsId(Long.valueOf(Helpers.getKey(new JSONObject(Helpers.getKey(jsonUSer,"userDetailsId")),"userDetailsId")));
+        userDetails.setUserDetailsId(Long.valueOf(Helpers.getKey(jsonUSer,"userDetailsId")));
         userDetails.setUserId(userId);
 
         return userDetails;

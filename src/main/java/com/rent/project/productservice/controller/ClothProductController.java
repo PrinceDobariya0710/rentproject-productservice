@@ -38,16 +38,21 @@ public class ClothProductController {
     @Autowired
     private UserService userService;
 
-    @PostMapping(path = "/cloth-product/image",consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Object> addClothProduct(@RequestHeader Map<String,String> header, @RequestParam("file") MultipartFile file) throws IOException {
+    @PostMapping(path = "add/cloth-product/")
+    public ResponseEntity<Object> addClothProduct(@RequestHeader Map<String,String> header,@RequestBody ClothProduct clothingProduct)  {
         String token = header.get("authorization");
         Claims claims = jwtUtil.extractAllClaims(token.substring(7));
         long requestedUserId = (long)(claims.get("id",Integer.class));
         Map<Integer ,String> role_name = claims.get("role",Map.class);
         UserCredObject userCredObject = new UserCredObject(token,requestedUserId,role_name.get("role_name"));
         Long userDetailsId = userService.getUserDetailsFromUserId(userCredObject.getId(),token).getUserDetailsId();
-        return null;
-//        return clothProductService.addClothProduct(clothProduct,file);
+        try{
+            ClothingProducts clothingProducts = clothProductService.addClothProduct(clothingProduct);
+            return ResponseEntity.ok().body(Map.of("message","Successfully created your product","data",clothingProducts));
+        }
+        catch (Exception e){
+            return  ResponseEntity.badRequest().body(Map.of("message","Unable to add your product","data",clothingProduct));
+        }
     }
 
     @GetMapping(path = "/get-cloth-product/")
