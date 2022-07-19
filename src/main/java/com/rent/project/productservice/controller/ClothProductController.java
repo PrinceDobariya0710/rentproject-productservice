@@ -135,4 +135,17 @@ public class ClothProductController {
 
     }
 
+    @GetMapping("get/owner_cproducts/")
+    public ResponseEntity<Object> getAllClothProductOfOwner(@RequestHeader Map<String,String> header,@RequestParam("user_details_id")Long userDetailsId){
+        try {
+            List<ClothingProducts> clothingProducts = clothingProductRepo.findByOwnerId(userDetailsId);
+            return ResponseEntity.ok().body(Map.of("message","success","data",clothingProducts));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body(Map.of(
+                    "response", "fail",
+                    "reason", "could not find products due to exception + "+e));
+        }
+    }
+
 }
