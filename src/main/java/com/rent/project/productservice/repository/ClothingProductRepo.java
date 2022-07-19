@@ -32,4 +32,7 @@ public interface ClothingProductRepo extends JpaRepository<ClothingProducts,Long
     @Query(value = "SELECT * FROM clothing_products cp WHERE cp.product_id =?1",nativeQuery = true)
     Optional<ClothingProducts> findByProductId(Long product_id);
 
+    @Query(value = "SELECT cp.* FROM clothing_products cp,product p WHERE p.id = cp.product_id AND user_details_id=?1",nativeQuery = true)
+    List<ClothingProducts> findByOwnerId(Long userDetailsId);
+
 }
